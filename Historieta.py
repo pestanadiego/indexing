@@ -1,5 +1,6 @@
 class Historieta:
-    def __init__(self, serial, titulo, precio, stock):
+    def __init__(self, rrn, serial, titulo, precio, stock):
+        self.rrn = rrn
         self.serial = serial
         self.titulo = titulo
         self.precio = precio
