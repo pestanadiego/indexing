@@ -325,10 +325,11 @@ def main():
             buy_historieta(seleccion)
 
         elif seleccion == '4':
+            escoge = "0"
             reabastecer = consulta(historietas, seriales_index, titulos_index)
-            while True:
-                try:
-                    if len(reabastecer) == 1:
+            if len(reabastecer) == 1:
+                while True:
+                    try:
                         escoge = input('''Desea reabastecer el stock de esta historieta?
                         1. Si
                         2. No
@@ -337,8 +338,19 @@ def main():
                             raise Exception
                         else:
                             break
-                except:
-                    print("Ingrese una opción válida")
+                    except:
+                        print("Ingrese una opción válida")
+
+                if escoge == "1":
+                    cant = input(
+                        "Ingrese la cantidad de historietas que desea agregar al stock: ")
+                    while not cant.isnumeric() or cant < 0:
+                        cant = input("Ingrese una cantidad válida: ")
+                    reabastecer[0].stock = int(cant)
+                else:
+                    break
+            else:
+                pass
 
         elif seleccion == '5':
             print('To do')
