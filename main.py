@@ -395,7 +395,7 @@ def checkout(historietas, seriales_index, titulos_index):
         if((v.lower() == 'y') and (int(story.stock) > 0)):
             quantity = input(
                 "Ingrese el numero de ejemplares que desea comprar: ")
-            while(int(quantity) <= 0 or (quantity.isalpha()) or int(quantity) >= int(story.stock)):
+            while(int(quantity) <= 0 or (quantity.isalpha()) or int(quantity) > int(story.stock)):
                 quantity = input(
                     "Ingrese un número válido. Asegurese de que esté comprando una cantidad menor o igual a la disponible: ")
             buying.append(quantity)
@@ -414,7 +414,7 @@ def checkout(historietas, seriales_index, titulos_index):
             buying.append(returned[0])
             quantity = input(
                 "Ingrese el numero de ejemplares que desea comprar: ")
-            while(int(quantity) <= 0 or (quantity.isalpha()) or int(quantity) >= int(returned[0].stock)):
+            while(int(quantity) <= 0 or (quantity.isalpha()) or int(quantity) > int(returned[0].stock)):
                 quantity = input(
                     "Ingrese un número válido. Asegurese de que esté comprando una cantidad menor o igual a la disponible: ")
             buying.append(quantity)
