@@ -114,7 +114,7 @@ def check_repeated(lista, valor_medio, next, prev, titulos_rrn):
         if lista[next][1] == valor_medio:
             titulos_rrn.append(lista[next][0])
             return check_repeated(lista, valor_medio, next+1, prev, titulos_rrn)
-    if prev > 0:
+    if int(prev) >= 0:
         if lista[prev][1] == valor_medio:
             titulos_rrn.append(lista[prev][0])
             return check_repeated(lista, valor_medio, next, prev-1, titulos_rrn)
@@ -131,9 +131,10 @@ def registrar_historieta(historietas, seriales_index):
     while (not len(serial) == 8) or (not serial.isnumeric()) or (sum(serial_index.count(serial) for serial_index in seriales_index) == 1):
         serial = input('Ingrese un serial válido: ')
     # Titulo
-    titulo = input('Ingrese el título de la historieta: ')
+    titulo = input('Ingrese el título de la historieta: ').lower()
     while (len(titulo) > 40) or (len(titulo) < 1):
-        titulo = input('Ingrese un título válido: ')
+        titulo = input('Ingrese un título válido: ').lower()
+    titulo = titulo.title()
     # Precio (siempre será entero)
     precio = input('Ingrese el precio de la historieta: ')
     while (not precio.isnumeric()) or (int(precio) <= 0) or (len(precio) > 3) or (len(precio) < 1):
@@ -227,24 +228,25 @@ def consulta(historietas, seriales_index, titulos_index):
             serial = input('Ingrese un serial válido: ')
         historieta_consulta = consulta_serial(
             historietas, seriales_index, serial)
-        print("Nombre: " + historieta_consulta.titulo,
-              "\nPrecio: $"+historieta_consulta.precio, "\nStock: " + historieta_consulta.stock)
+        print("\nNombre: " + historieta_consulta.titulo,
+              "\nPrecio: $"+historieta_consulta.precio, "\nStock: " + historieta_consulta.stock+"\n")
         lista = []
         lista.append(historieta_consulta)
         return lista
     else:
         titulo = input(
-            'Ingrese el nombre de la historieta: ')
+            'Ingrese el nombre de la historieta: ').lower()
         while (len(titulo.split(" ")) > 2 or len(titulo) == 0):
-            titulo = input('Ingrese un titulo con 1 o 2 palabras: ')
+            titulo = input('Ingrese un titulo con 1 o 2 palabras: ').lower()
+        titulo = titulo.title()
         titulo = titulo.split(" ")
         historieta_consulta = consulta_titulo(
             historietas, titulos_index, titulo)
         if len(historieta_consulta) == 0:
             print("No se han encontrado historietas con ese título")
         elif len(historieta_consulta) == 1:
-            print("Nombre: " + historieta_consulta[0].titulo,
-                  "\nPrecio: $"+historieta_consulta[0].precio, "\nStock: " + historieta_consulta[0].stock)
+            print("\nNombre: " + historieta_consulta[0].titulo,
+                  "\nPrecio: $"+historieta_consulta[0].precio, "\nStock: " + historieta_consulta[0].stock+"\n")
         else:
             n = 0
             print(
@@ -409,6 +411,18 @@ def checkout(historietas, seriales_index, titulos_index):
         else:
             print('Se ha cancelado la compra')
 
+
+def compactador(historietas):
+    count = 0
+
+    for i in range(len(historietas)):
+        i = i - count
+        historietas[i].rrn = str(int(historietas[i].rrn)-count)
+        if historietas[i].muerto:
+            count += 1
+            historietas.remove(historietas[i])
+    return historietas
+
 # MAIN
 
 
@@ -444,22 +458,49 @@ def main():
 
         if seleccion == '1':
             registrar_historieta(historietas, seriales_index)
+            # Cargamos los cambios al CSV
             guardar_historietas(historietas)
+            # Vaciamos y volvemos a crear y ordenar el index de seriales
+            seriales_index = []
+            seriales_index = reorder_seriales_index(
+                historietas, seriales_index)
+            quick_sort(seriales_index)
+            # Vaciamos y volvemos a crear y ordenar el index de titulos
+            titulos_index = []
+            titulos_index = reorder_titulos_index(historietas, titulos_index)
+            quick_sort(titulos_index)
 
         elif seleccion == '2':
             consulta(historietas, seriales_index, titulos_index)
 
         elif seleccion == '3':
             checkout(historietas, seriales_index, titulos_index)
+            # Cargamos los cambios al CSV
+            guardar_historietas(historietas)
 
         elif seleccion == '4':
             reabastecer_historietas(historietas, seriales_index, titulos_index)
+            # Cargamos los cambios al CSV
+            guardar_historietas(historietas)
 
         elif seleccion == '5':
             eliminar_historieta(historietas, seriales_index, titulos_index)
+            # Cargamos los cambios al CSV
+            guardar_historietas(historietas)
 
         elif seleccion == "6":
-            print("To Do")
+            historietas = compactador(historietas)
+            # Cargamos los cambios al CSV
+            guardar_historietas(historietas)
+            # Vaciamos y volvemos a crear y ordenar el index de seriales
+            seriales_index = []
+            seriales_index = reorder_seriales_index(
+                historietas, seriales_index)
+            quick_sort(seriales_index)
+            # Vaciamos y volvemos a crear y ordenar el index de titulos
+            titulos_index = []
+            titulos_index = reorder_titulos_index(historietas, titulos_index)
+            quick_sort(titulos_index)
 
         else:
             print('¡Hasta luego!')
