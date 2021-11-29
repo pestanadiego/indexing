@@ -441,6 +441,9 @@ def main():
     quick_sort(titulos_index)
 
     print('Manejo de inventario')
+    print(historietas)
+    print(titulos_index)
+    print(seriales_index)
 
     while True:
         seleccion = input('''Por favor, seleccione una opción:
