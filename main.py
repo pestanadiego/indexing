@@ -192,19 +192,16 @@ def reorder_titulos_index(historietas, titulos_index):
     return titulos_index
 
 
-def buy_historieta(compra):
-    monto = 0
-
+def buy_historieta(compra, monto):
+    aux = 0
     print("\n")
     print("HISTORIETAS A TU ALCANCE")
     print("Productos seleccionados: ")
-    for i in range(len(compra)):
-        print(
-            f'{i+1} titulo: {compra[i][0].titulo} cantidad: {compra[i][1]} Precio unidad: ${compra[i][0].precio}')
-        aux = int(compra[i][0].precio)
-        aux1 = aux*(int(compra[i][1]))
-        monto += aux1
-        compra[i][0].stock = str(int(compra[i][0].stock)-int(compra[i][1]))
+    print(
+        f'titulo: {compra[0].titulo} cantidad: {compra[1]} Precio unidad: ${compra[0].precio}')
+    aux = int(compra[0].precio)
+    monto = aux*(int(compra[1]))
+    compra[0].stock = str(int(compra[0].stock)-int(compra[1]))
 
     print("----------------------------------------------------")
     print(f'Total: ${monto}')
@@ -224,6 +221,7 @@ def consulta(historietas, seriales_index, titulos_index):
         seleccion_consulta = input('Ingrese una opción válida: ')
 
     if(seleccion_consulta == '1'):
+        lista = []
         serial = input('Ingrese el serial de la historieta: ')
         while (not len(serial) == 8) or (not serial.isnumeric()):
             serial = input('Ingrese un serial válido: ')
@@ -362,6 +360,58 @@ def eliminar_historieta(historietas, seriales_index, titulos_index):
     # MAIN
 
 
+def checkout(historietas, seriales_index, titulos_index):
+    buying = []
+    monto = 0
+    returned = consulta(historietas, seriales_index, titulos_index)
+    if (len(returned) > 1):
+        selection = input(
+            "Ingrese el numero correspondiente a la historieta que desea comprar: ")
+        while(int(selection) > len(returned)):
+            selection = input("Ingrese un indice válido: ")
+
+        story = returned[int(selection)-1]
+        buying.append(story)
+        print("Nombre: " + story.titulo,
+              "\nPrecio: $" + story.precio, "\nStock:" + story.stock)
+
+        v = input(
+            "Desea comprar esta historieta? ingrese 'Y' para comprarla, otro caracter si no: ")
+
+        if((v.lower() == 'y') and (int(story.stock) > 0)):
+            quantity = input(
+                "Ingrese el numero de ejemplares que desea comprar: ")
+            while(int(quantity) <= 0 or (quantity.isalpha())):
+                quantity = input("Ingrese un numero valido: ")
+            buying.append(quantity)
+            buy_historieta(buying, monto)
+
+        elif((int(story.stock) <= 0)):
+            print(
+                'No se puede realizar la compra ya que no existen ejemplares de esta historieta.')
+
+        else:
+            print('Se ha cancelado la compra')
+    else:
+        v = input(
+            "Desea comprar esta historieta? ingrese 'Y' para comprarla, otro caracter si no: ")
+        if(v.lower() == 'y' and (int(returned[0].stock) > 0)):
+            buying.append(returned[0])
+            quantity = input(
+                "Ingrese el numero de ejemplares que desea comprar: ")
+            while(int(quantity) <= 0 or (quantity.isalpha())):
+                quantity = input("Ingrese un numero valido: ")
+            buying.append(quantity)
+            buy_historieta(buying, monto)
+        elif((int(returned[0].stock) <= 0)):
+            print(
+                'No se puede realizar la compra ya que no existen ejemplares de esta historieta.')
+        else:
+            print('Se ha cancelado la compra')
+
+# MAIN
+
+
 def main():
     # Inicialización
     historietas = []
@@ -400,34 +450,7 @@ def main():
             consulta(historietas, seriales_index, titulos_index)
 
         elif seleccion == '3':
-            u = "0"
-            seleccion = []
-            while(u == "0"):
-                for historieta in historietas:
-                    number = int(historieta.rrn)
-                    number += 1
-                    print(number, historieta.serial,
-                          historieta.titulo, historieta.precio, historieta.stock)
-                story = []
-                selected = input(
-                    "Porfavor ingrese el numero de la historieta que desea comprar: ")
-                while((int(selected) > len(historietas)) or (selected.isalpha())):
-                    selected = input(
-                        "Por favor ingrese un numero que corresponda a una historieta: ")
-
-                quantity = input(
-                    "Por favor ingrese el numero de ejemplares que desea comprar: ")
-                while((int(quantity) > int(historietas[int(selected)-1].stock)) or ((int(quantity)) < 0) or (quantity.isalpha())):
-                    quantity: input(
-                        "No contamos con esa cantidad de ejemplares, por favor ingrese una cantidad valida: ")
-                story.append(historietas[int(selected)-1])
-                story.append(quantity)
-
-                seleccion.append(story)
-                u = input(
-                    'Ingrese 0 si desea comprar otra historieta, otro sino: ')
-
-            buy_historieta(seleccion)
+            checkout(historietas, seriales_index, titulos_index)
 
         elif seleccion == '4':
             reabastecer_historietas(historietas, seriales_index, titulos_index)
