@@ -3,7 +3,6 @@ from Historieta import Historieta
 
 # LECTURA/ESCRITURA
 
-
 def cargar_historietas(historietas):
     with open('historietas.csv', 'r') as archivo_csv:
         csv_reader = csv.reader(archivo_csv)
@@ -21,7 +20,6 @@ def cargar_historietas(historietas):
 
     return historietas
 
-
 def guardar_historietas(historietas):
     with open('historietas.csv', 'w') as archivo_csv:
         csv_writer = csv.writer(archivo_csv)
@@ -36,7 +34,6 @@ def guardar_historietas(historietas):
                 historieta.muerto
             ]
             csv_writer.writerow(line)
-
 
 # ORDENAMIENTO
 
@@ -58,7 +55,6 @@ def pivote(seriales, bajo, alto):
 
         seriales[i], seriales[j] = seriales[j], seriales[i]
 
-
 def quick_sort(seriales):
     # Función de ayuda recursividad
     def quick_sort_recursivo(seriales, bajo, alto):
@@ -70,7 +66,6 @@ def quick_sort(seriales):
     quick_sort_recursivo(seriales, 0, len(seriales) - 1)
 
 # BUSQUEDA
-
 
 def busqueda_binaria(lista, item):
     index_inicial = 0
@@ -89,7 +84,6 @@ def busqueda_binaria(lista, item):
             index_inicial = medio + 1
 
     return "NO"
-
 
 def busqueda_binaria_titulo(lista, item):
     index_inicial = 0
@@ -110,7 +104,6 @@ def busqueda_binaria_titulo(lista, item):
 
     return "NO"
 
-
 def check_repeated(lista, valor_medio, next, prev, titulos_rrn):
     if len(lista) > next:
         if lista[next][1] == valor_medio:
@@ -122,8 +115,7 @@ def check_repeated(lista, valor_medio, next, prev, titulos_rrn):
             return check_repeated(lista, valor_medio, next, prev-1, titulos_rrn)
     return titulos_rrn
 
-    # FUNCIONALIDADES
-
+# FUNCIONALIDADES
 
 def registrar_historieta(historietas, seriales_index):
     # RRN
@@ -151,7 +143,6 @@ def registrar_historieta(historietas, seriales_index):
     print('¡Se ha registrado la historieta con éxito!')
     return historietas
 
-
 def consulta_serial(historietas, seriales, serial):
     index = busqueda_binaria(seriales, serial)
     if index != "NO":
@@ -162,7 +153,6 @@ def consulta_serial(historietas, seriales, serial):
             return "Muerto"
     else:
         return "Nada"
-
 
 def consulta_titulo(historietas, titulos, titulo):
     count = 0
@@ -181,13 +171,11 @@ def consulta_titulo(historietas, titulos, titulo):
             count = 0
     return found_titles
 
-
 def reorder_seriales_index(historietas, seriales_index):
     for historieta in historietas:
         serial = [historieta.rrn, historieta.serial]
         seriales_index.append(serial)
     return seriales_index
-
 
 def reorder_titulos_index(historietas, titulos_index):
     for historieta in historietas:
@@ -200,7 +188,6 @@ def reorder_titulos_index(historietas, titulos_index):
             titulo = [historieta.rrn, historieta.titulo]
             titulos_index.append(titulo)
     return titulos_index
-
 
 def buy_historieta(compra, monto):
     aux = 0
@@ -222,7 +209,6 @@ def buy_historieta(compra, monto):
         selection = input("Ingrese un numero de tarjeta valido: ")
 
     print("Su compra fue realizada con exito!")
-
 
 def consulta(historietas, seriales_index, titulos_index):
     seleccion_consulta = input(
@@ -269,7 +255,6 @@ def consulta(historietas, seriales_index, titulos_index):
                 print(str((n)) + ".", "Nombre: " + historieta.titulo, "\nPrecio: $" +
                       historieta.precio, "\nStock:", historieta.stock + "\n")
         return historieta_consulta
-
 
 def reabastecer_historietas(historietas, seriales_index, titulos_index):
     reabastecer = consulta(historietas, seriales_index, titulos_index)
@@ -325,14 +310,13 @@ def reabastecer_historietas(historietas, seriales_index, titulos_index):
             reabastecer[int(
                 historieta)-1].stock = str(int(reabastecer[int(historieta)-1].stock) + int(cant))
 
-
 def eliminar_historieta(historietas, seriales_index, titulos_index):
     historietas_encont = consulta(
         historietas, seriales_index, titulos_index)
     if len(historietas_encont) == 1:
         while True:
             try:
-                escoge = input('''Desea elminar el stock de esta historieta?
+                escoge = input('''¿Desea eliminar esta historieta?
                 1. Si
                 2. No
                 >> ''')
@@ -371,9 +355,6 @@ def eliminar_historieta(historietas, seriales_index, titulos_index):
                     print("Seleccione un número válido. \n")
             historietas_encont[int(
                 historieta)-1].muerto = '1'
-
-    # MAIN
-
 
 def checkout(historietas, seriales_index, titulos_index):
     buying = []
@@ -428,7 +409,6 @@ def checkout(historietas, seriales_index, titulos_index):
     else:
         pass
 
-
 def compactador(historietas):
     count = 0
     if len(historietas) < 1:
@@ -444,7 +424,6 @@ def compactador(historietas):
     return historietas
 
 # MAIN
-
 
 def main():
     # Inicialización
@@ -525,7 +504,6 @@ def main():
         else:
             print('¡Hasta luego!')
             break
-
 
 if __name__ == "__main__":
     main()
