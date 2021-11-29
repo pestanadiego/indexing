@@ -395,8 +395,9 @@ def checkout(historietas, seriales_index, titulos_index):
         if((v.lower() == 'y') and (int(story.stock) > 0)):
             quantity = input(
                 "Ingrese el numero de ejemplares que desea comprar: ")
-            while(int(quantity) <= 0 or (quantity.isalpha())):
-                quantity = input("Ingrese un numero valido: ")
+            while(int(quantity) <= 0 or (quantity.isalpha()) or int(quantity) >= int(story.stock)):
+                quantity = input(
+                    "Ingrese un número válido. Asegurese de que esté comprando una cantidad menor o igual a la disponible: ")
             buying.append(quantity)
             buy_historieta(buying, monto)
 
@@ -406,15 +407,16 @@ def checkout(historietas, seriales_index, titulos_index):
 
         else:
             print('Se ha cancelado la compra')
-    else:
+    elif len(returned) == 1:
         v = input(
             "Desea comprar esta historieta? ingrese 'Y' para comprarla, otro caracter si no: ")
         if(v.lower() == 'y' and (int(returned[0].stock) > 0)):
             buying.append(returned[0])
             quantity = input(
                 "Ingrese el numero de ejemplares que desea comprar: ")
-            while(int(quantity) <= 0 or (quantity.isalpha())):
-                quantity = input("Ingrese un numero valido: ")
+            while(int(quantity) <= 0 or (quantity.isalpha()) or int(quantity) >= int(returned[0].stock)):
+                quantity = input(
+                    "Ingrese un número válido. Asegurese de que esté comprando una cantidad menor o igual a la disponible: ")
             buying.append(quantity)
             buy_historieta(buying, monto)
         elif((int(returned[0].stock) <= 0)):
@@ -422,6 +424,8 @@ def checkout(historietas, seriales_index, titulos_index):
                 'No se puede realizar la compra ya que no existen ejemplares de esta historieta.')
         else:
             print('Se ha cancelado la compra')
+    else:
+        pass
 
 
 def compactador(historietas):
