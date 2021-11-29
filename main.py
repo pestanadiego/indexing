@@ -192,6 +192,43 @@ def reorder_titulos_index(historietas, titulos_index):
     return titulos_index
 
 
+def consulta(historietas, seriales_index, titulos_index):
+    seleccion_consulta = input(
+        '¿Desea buscar por serial (1) o título (2)?: ')
+    while (not seleccion_consulta.isnumeric()) or (len(seleccion_consulta) != 1) or (int(seleccion_consulta) <= 0) or (int(seleccion_consulta) > 2):
+        seleccion_consulta = input('Ingrese una opción válida: ')
+
+    if(seleccion_consulta == '1'):
+        serial = input('Ingrese el serial de la historieta: ')
+        while (not len(serial) == 8) or (not serial.isnumeric()):
+            serial = input('Ingrese un serial válido: ')
+        historieta_consulta = consulta_serial(
+            historietas, seriales_index, serial)
+        print(historieta_consulta.titulo,
+              historieta_consulta.precio, historieta_consulta.stock)
+        return list(historieta_consulta)
+    else:
+        titulo = input(
+            'Ingrese el nombre de la historieta: ')
+        while (len(titulo.split(" ")) > 2 or len(titulo) == 0):
+            titulo = input('Ingrese un titulo con 1 o 2 palabras: ')
+        titulo = titulo.split(" ")
+        historieta_consulta = consulta_titulo(
+            historietas, titulos_index, titulo)
+        if len(historieta_consulta) == 0:
+            print("No se han encontrado historietas con ese título")
+        elif len(historieta_consulta) == 1:
+            print(historieta_consulta[0].titulo,
+                  historieta_consulta[0].precio, historieta_consulta[0].stock)
+        else:
+            n = 0
+            print(
+                "Se han encontrado las siguientes historietas:")
+            for historieta in historieta_consulta:
+                n += 1
+                print(str((n)) + ". ", historieta.titulo)
+        return historieta_consulta
+
 # MAIN
 
 
@@ -230,49 +267,17 @@ def main():
             guardar_historietas(historietas)
 
         elif seleccion == '2':
-            seleccion_consulta = input(
-                '¿Desea buscar por serial (1) o título (2)?: ')
-            while (not seleccion_consulta.isnumeric()) or (len(seleccion_consulta) != 1) or (int(seleccion_consulta) <= 0) or (int(seleccion_consulta) > 2):
-                seleccion_consulta = input('Ingrese una opción válida: ')
-
-            if(seleccion_consulta == '1'):
-                serial = input('Ingrese el serial de la historieta: ')
-                while (not len(serial) == 8) or (not serial.isnumeric()):
-                    serial = input('Ingrese un serial válido: ')
-                historieta_consulta = consulta_serial(
-                    historietas, seriales_index, serial)
-                print(historieta_consulta.titulo,
-                      historieta_consulta.precio, historieta_consulta.stock)
-            else:
-                titulo = input(
-                    'Ingrese el nombre de la historieta: ')
-                while (len(titulo.split(" ")) > 2 or len(titulo) == 0):
-                    titulo = input('Ingrese un titulo con 1 o 2 palabras: ')
-                titulo = titulo.split(" ")
-                historieta_consulta = consulta_titulo(
-                    historietas, titulos_index, titulo)
-                if len(historieta_consulta) == 0:
-                    print("No se han encontrado historietas con ese título")
-                elif len(historieta_consulta) == 1:
-                    print(historieta_consulta[0].titulo,
-                          historieta_consulta[0].precio, historieta_consulta[0].stock)
-                else:
-                    n = 0
-                    print(
-                        "Se han encontrado las siguientes historietas:")
-                    for historieta in historieta_consulta:
-                        n += 1
-                        print(str((n)) + ". ", historieta.titulo)
-                    while True:
-                        try:
-                            buy = input(
-                                "Seleccione el número correspondiente a la historieta para comprar: ")
-                            if int(buy) > n or int(buy) <= 0:
-                                raise Exception
-                            else:
-                                break
-                        except:
-                            print("Seleccione un número válido. \n")
+            consulta(historietas, seriales_index, titulos_index)
+            # while True:
+            #     try:
+            #         buy = input(
+            #             "Seleccione el número correspondiente a la historieta para comprar: ")
+            #         if int(buy) > n or int(buy) <= 0:
+            #             raise Exception
+            #         else:
+            #             break
+            #     except:
+            #         print("Seleccione un número válido. \n")
 
         elif seleccion == '3':
             for historieta in historietas:
@@ -280,7 +285,20 @@ def main():
                       historieta.titulo, historieta.precio, historieta.stock)
 
         elif seleccion == '4':
-            print('To do')
+            reabastecer = consulta(historietas, seriales_index, titulos_index)
+            while True:
+                try:
+                    if len(reabastecer) == 1:
+                        escoge = input('''Desea reabastecer el stock de esta historieta?
+                        1. Si
+                        2. No
+                        >> ''')
+                        if int(escoge) < 0 or int(escoge) > 2:
+                            raise Exception
+                        else:
+                            break
+                except:
+                    print("Ingrese una opción válida")
 
         elif seleccion == '5':
             print('To do')
