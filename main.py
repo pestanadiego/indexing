@@ -230,9 +230,10 @@ def consulta(historietas, seriales_index, titulos_index):
             serial = input('Ingrese un serial válido: ')
         historieta_consulta = consulta_serial(
             historietas, seriales_index, serial)
+        print("Nombre: " + historieta_consulta.titulo,
+              "\nPrecio: $"+historieta_consulta.precio, "\nStock:" + historieta_consulta.stock)
+        lista = []
         lista.append(historieta_consulta)
-        print(historieta_consulta.titulo,
-              historieta_consulta.precio, historieta_consulta.stock)
         return lista
     else:
         titulo = input(
@@ -245,15 +246,16 @@ def consulta(historietas, seriales_index, titulos_index):
         if len(historieta_consulta) == 0:
             print("No se han encontrado historietas con ese título")
         elif len(historieta_consulta) == 1:
-            print(historieta_consulta[0].titulo,
-                  historieta_consulta[0].precio, historieta_consulta[0].stock)
+            print("Nombre: " + historieta_consulta[0].titulo,
+                  "\nPrecio: $"+historieta_consulta[0].precio, "\nStock:" + historieta_consulta[0].stock)
         else:
             n = 0
             print(
-                "Se han encontrado las siguientes historietas:")
+                "Se han encontrado las siguientes historietas:\n")
             for historieta in historieta_consulta:
                 n += 1
-                print(str(n) + ". ", historieta.titulo)
+                print(str((n)) + ".", "Nombre: " + historieta.titulo, "\nPrecio: $" +
+                      historieta.precio, "\nStock:", historieta.stock + "\n")
         return historieta_consulta
 
 
@@ -322,9 +324,9 @@ def main():
 
         elif seleccion == '4':
             reabastecer = consulta(historietas, seriales_index, titulos_index)
-            while True:
-                try:
-                    if len(reabastecer) == 1:
+            if len(reabastecer) == 1:
+                while True:
+                    try:
                         escoge = input('''Desea reabastecer el stock de esta historieta?
                         1. Si
                         2. No
@@ -333,8 +335,48 @@ def main():
                             raise Exception
                         else:
                             break
-                except:
-                    print("Ingrese una opción válida")
+                    except:
+                        print("Ingrese una opción válida")
+
+                if escoge == "1":
+                    cant = input(
+                        "Ingrese la cantidad de historietas que desea agregar al stock: ")
+                    while not cant.isnumeric() or int(cant) < 0:
+                        cant = input("Ingrese una cantidad válida: ")
+                    reabastecer[0].stock = str(int(
+                        reabastecer[0].stock) + int(cant))
+                else:
+                    break
+            else:
+                while True:
+                    try:
+                        escoge = input('''Desea reabastecer el stock de alguna de las historietas encontradas?
+                        1. Si
+                        2. No
+                        >> ''')
+                        if int(escoge) < 0 or int(escoge) > 2:
+                            raise Exception
+                        else:
+                            break
+                    except:
+                        print("Ingrese una opción válida")
+                if escoge == "1":
+                    while True:
+                        try:
+                            historieta = input(
+                                "Seleccione el número correspondiente a la historieta que desea reabastecer: ")
+                            if int(historieta) > len(reabastecer) or int(historieta) <= 0:
+                                raise Exception
+                            else:
+                                break
+                        except:
+                            print("Seleccione un número válido. \n")
+                    cant = input(
+                        "Ingrese la cantidad de historietas que desea agregar al stock: ")
+                    while not cant.isnumeric() or int(cant) < 0:
+                        cant = input("Ingrese una cantidad válida: ")
+                    reabastecer[int(
+                        historieta)-1].stock = str(int(reabastecer[int(historieta)-1].stock) + int(cant))
 
         elif seleccion == '5':
             print('To do')
