@@ -431,13 +431,16 @@ def checkout(historietas, seriales_index, titulos_index):
 
 def compactador(historietas):
     count = 0
-
-    for i in range(len(historietas)):
-        i = i - count
-        historietas[i].rrn = str(int(historietas[i].rrn)-count)
-        if historietas[i].muerto:
-            count += 1
-            historietas.remove(historietas[i])
+    if len(historietas) < 1:
+        print("No hay historietas en el inventario, no se puede compactar.")
+    else:
+        for i in range(len(historietas)):
+            i = i - count
+            historietas[i].rrn = str(int(historietas[i].rrn)-count)
+            if historietas[i].muerto == "1":
+                count += 1
+                historietas.remove(historietas[i])
+        print("Se ha compactado exitosamente")
     return historietas
 
 # MAIN
