@@ -58,7 +58,7 @@ def pivote(seriales, bajo, alto):
 
 
 def quick_sort(seriales):
-    # Función de ayuda (recursividad)
+    # Función de ayuda recursividad
     def quick_sort_recursivo(seriales, bajo, alto):
         if bajo < alto:
             index_particion = pivote(seriales, bajo, alto)
@@ -191,6 +191,34 @@ def reorder_titulos_index(historietas, titulos_index):
             titulos_index.append(titulo)
     return titulos_index
 
+def buy_historieta(compra):
+    monto=0
+    
+    print("\n")
+    print("HISTORIETAS A TU ALCANCE")
+    print("Productos seleccionados: ")
+    for i in range(len(compra)):
+        print(f'{i+1} titulo: {compra[i][0].titulo} cantidad: {compra[i][1]} Precio unidad: ${compra[i][0].precio}')
+        aux = int(compra[i][0].precio)
+        aux1 = aux*(int(compra[i][1]))
+        monto+=aux1
+        compra[i][0].stock = str(int(compra[i][0].stock)-int(compra[i][1]))
+
+    print("----------------------------------------------------")
+    print(f'Total: ${monto}')
+    print("\n")
+
+
+    selection = input("Ingrese el pin de su tarjeta de credito: ")
+    while(len(selection) !=4):
+        selection=input("Ingrese un numero de tarjeta valido: ")
+
+    print("Su compra fue realizada con exito!")
+
+    
+
+
+
 
 # MAIN
 
@@ -275,9 +303,29 @@ def main():
                             print("Seleccione un número válido. \n")
 
         elif seleccion == '3':
-            for historieta in historietas:
-                print(historieta.rrn, historieta.serial,
-                      historieta.titulo, historieta.precio, historieta.stock)
+            u="0"
+            seleccion=[]
+            while(u=="0"): 
+                for historieta in historietas:
+                    number=int(historieta.rrn)
+                    number+=1
+                    print(number, historieta.serial,
+                          historieta.titulo, historieta.precio, historieta.stock)
+                story=[]
+                selected = input("Porfavor ingrese el numero de la historieta que desea comprar: ")
+                while((int(selected)>len(historietas)) or (selected.isalpha())):
+                    selected = input("Por favor ingrese un numero que corresponda a una historieta: ")
+                
+                quantity= input("Por favor ingrese el numero de ejemplares que desea comprar: ")
+                while((int(quantity) > int(historietas[int(selected)-1].stock)) or ((int(quantity)) <0) or (quantity.isalpha()) ):
+                    quantity: input("No contamos con esa cantidad de ejemplares, por favor ingrese una cantidad valida: ")
+                story.append(historietas[int(selected)-1])
+                story.append(quantity)
+
+                seleccion.append(story)
+                u=input('Ingrese 0 si desea comprar otra historieta, otro sino: ')
+            
+            buy_historieta(seleccion)
 
         elif seleccion == '4':
             print('To do')
