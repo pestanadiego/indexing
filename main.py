@@ -127,7 +127,7 @@ def check_repeated(lista, valor_medio, next, prev, titulos_rrn):
 
 def registrar_historieta(historietas, seriales_index):
     # RRN
-    rrn = len(historietas)
+    rrn = str(len(historietas))
     # Serial
     serial = input('Ingrese el serial de la historieta: ')
     while (not len(serial) == 8) or (not serial.isnumeric()) or (sum(serial_index.count(serial) for serial_index in seriales_index) == 1):
@@ -146,9 +146,10 @@ def registrar_historieta(historietas, seriales_index):
     while (not stock.isnumeric()) or (len(stock) > 2) or (len(stock) < 1) or (int(stock) <= 0):
         stock = input('Introduzca una cantidad válida: ')
 
-    nueva_historieta = Historieta(rrn, serial, titulo, precio, stock)
+    nueva_historieta = Historieta(rrn, serial, titulo, precio, stock, "0")
     historietas.append(nueva_historieta)
     print('¡Se ha registrado la historieta con éxito!')
+    return historietas
 
 
 def consulta_serial(historietas, seriales, serial):
@@ -395,7 +396,7 @@ def checkout(historietas, seriales_index, titulos_index):
         if((v.lower() == 'y') and (int(story.stock) > 0)):
             quantity = input(
                 "Ingrese el numero de ejemplares que desea comprar: ")
-            while(int(quantity) <= 0 or (quantity.isalpha()) or int(quantity) >= int(story.stock)):
+            while(int(quantity) <= 0 or (quantity.isalpha()) or int(quantity) > int(story.stock)):
                 quantity = input(
                     "Ingrese un número válido. Asegurese de que esté comprando una cantidad menor o igual a la disponible: ")
             buying.append(quantity)
@@ -414,7 +415,7 @@ def checkout(historietas, seriales_index, titulos_index):
             buying.append(returned[0])
             quantity = input(
                 "Ingrese el numero de ejemplares que desea comprar: ")
-            while(int(quantity) <= 0 or (quantity.isalpha()) or int(quantity) >= int(returned[0].stock)):
+            while(int(quantity) <= 0 or (quantity.isalpha()) or int(quantity) > int(returned[0].stock)):
                 quantity = input(
                     "Ingrese un número válido. Asegurese de que esté comprando una cantidad menor o igual a la disponible: ")
             buying.append(quantity)
@@ -473,7 +474,7 @@ def main():
             seleccion = input('Por favor, ingrese una opción válida: ')
 
         if seleccion == '1':
-            registrar_historieta(historietas, seriales_index)
+            historietas = registrar_historieta(historietas, seriales_index)
             # Cargamos los cambios al CSV
             guardar_historietas(historietas)
             # Vaciamos y volvemos a crear y ordenar el index de seriales
