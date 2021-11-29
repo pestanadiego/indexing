@@ -224,14 +224,16 @@ def consulta(historietas, seriales_index, titulos_index):
         seleccion_consulta = input('Ingrese una opción válida: ')
 
     if(seleccion_consulta == '1'):
+        lista=[]
         serial = input('Ingrese el serial de la historieta: ')
         while (not len(serial) == 8) or (not serial.isnumeric()):
             serial = input('Ingrese un serial válido: ')
         historieta_consulta = consulta_serial(
             historietas, seriales_index, serial)
+        lista.append(historieta_consulta)
         print(historieta_consulta.titulo,
               historieta_consulta.precio, historieta_consulta.stock)
-        return list(historieta_consulta)
+        return lista
     else:
         titulo = input(
             'Ingrese el nombre de la historieta: ')
@@ -251,8 +253,10 @@ def consulta(historietas, seriales_index, titulos_index):
                 "Se han encontrado las siguientes historietas:")
             for historieta in historieta_consulta:
                 n += 1
-                print(str((n)) + ". ", historieta.titulo)
+                print(str(n) + ". ", historieta.titulo)
         return historieta_consulta
+
+
 
 # MAIN
 
@@ -295,34 +299,26 @@ def main():
             consulta(historietas, seriales_index, titulos_index)
 
         elif seleccion == '3':
-            u = "0"
-            seleccion = []
-            while(u == "0"):
-                for historieta in historietas:
-                    number = int(historieta.rrn)
-                    number += 1
-                    print(number, historieta.serial,
-                          historieta.titulo, historieta.precio, historieta.stock)
-                story = []
-                selected = input(
-                    "Porfavor ingrese el numero de la historieta que desea comprar: ")
-                while((int(selected) > len(historietas)) or (selected.isalpha())):
-                    selected = input(
-                        "Por favor ingrese un numero que corresponda a una historieta: ")
+                
+            returned = consulta(historietas, seriales_index, titulos_index)
+            if (len(returned)>1):
+                selection = input("Ingrese el numero correspondiente a la historieta que desea comprar")
+                while(int(selection) > len(returned)):
+                    selection=input("Ingrese un indice válido: ")
+                
+                story = returned[int(selection)-1]
+                print(story.stock)
 
-                quantity = input(
-                    "Por favor ingrese el numero de ejemplares que desea comprar: ")
-                while((int(quantity) > int(historietas[int(selected)-1].stock)) or ((int(quantity)) < 0) or (quantity.isalpha())):
-                    quantity: input(
-                        "No contamos con esa cantidad de ejemplares, por favor ingrese una cantidad valida: ")
-                story.append(historietas[int(selected)-1])
-                story.append(quantity)
-
-                seleccion.append(story)
-                u = input(
-                    'Ingrese 0 si desea comprar otra historieta, otro sino: ')
-
-            buy_historieta(seleccion)
+            #quantity = input(
+            #    "Por favor ingrese el numero de ejemplares que desea comprar: ")
+            #while((int(quantity) > int(historietas[int(selected)-1].stock)) or ((int(quantity)) < 0) or (quantity.isalpha())):
+            #    quantity: input(
+            #        "No contamos con esa cantidad de ejemplares, por favor ingrese una cantidad valida: ")
+            #
+            #story.append(quantity)
+            #seleccion.append(story)
+#
+            #buy_historieta(seleccion)
 
         elif seleccion == '4':
             reabastecer = consulta(historietas, seriales_index, titulos_index)
