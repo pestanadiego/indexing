@@ -503,6 +503,9 @@ def main():
             quick_sort(titulos_index)
 
         else:
+            historietas = compactador(historietas)
+            # Cargamos los cambios al CSV
+            guardar_historietas(historietas)
             print('¡Hasta luego!')
             break
 
