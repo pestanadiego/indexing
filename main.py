@@ -14,7 +14,8 @@ def cargar_historietas(historietas):
                 serial=line[1],
                 titulo=line[2],
                 precio=line[3],
-                stock=line[4]
+                stock=line[4],
+                muerto=line[5]
             )
             historietas.append(historieta)
 
@@ -31,7 +32,8 @@ def guardar_historietas(historietas):
                 historieta.serial,
                 historieta.titulo,
                 historieta.precio,
-                historieta.stock
+                historieta.stock,
+                historieta.muerto
             ]
             csv_writer.writerow(line)
 
@@ -151,8 +153,14 @@ def registrar_historieta(historietas, seriales_index):
 
 def consulta_serial(historietas, seriales, serial):
     index = busqueda_binaria(seriales, serial)
-    rrn_consulta = seriales[index][0]
-    return historietas[int(rrn_consulta)]
+    if index != "NO":
+        rrn_consulta = seriales[index][0]
+        if historietas[int(rrn_consulta)].muerto == "0":
+            return historietas[int(rrn_consulta)]
+        else:
+            return "Muerto"
+    else:
+        return "Nada"
 
 
 def consulta_titulo(historietas, titulos, titulo):
@@ -165,7 +173,7 @@ def consulta_titulo(historietas, titulos, titulo):
         for palabra in titulo:
             if palabra in historietas[int(index)].titulo:
                 count += 1
-        if count == len(titulo) and not(historietas[int(index)].muerto):
+        if count == len(titulo) and (historietas[int(index)].muerto == '0'):
             found_titles.append(historietas[int(index)])
             count = 0
         else:
@@ -228,11 +236,15 @@ def consulta(historietas, seriales_index, titulos_index):
             serial = input('Ingrese un serial válido: ')
         historieta_consulta = consulta_serial(
             historietas, seriales_index, serial)
-        print("\nNombre: " + historieta_consulta.titulo,
-              "\nPrecio: $"+historieta_consulta.precio, "\nStock: " + historieta_consulta.stock+"\n")
-        lista = []
-        lista.append(historieta_consulta)
+        if historieta_consulta != "Nada" and historieta_consulta != "Muerto":
+            print("\nNombre: " + historieta_consulta.titulo,
+                  "\nPrecio: $"+historieta_consulta.precio, "\nStock: " + historieta_consulta.stock+"\n")
+            lista.append(historieta_consulta)
+        else:
+            print("No se han encontrado coincidencias de ese serial.")
+
         return lista
+
     else:
         titulo = input(
             'Ingrese el nombre de la historieta: ').lower()
@@ -331,7 +343,7 @@ def eliminar_historieta(historietas, seriales_index, titulos_index):
                 print("Ingrese una opción válida")
 
         if escoge == "1":
-            historietas_encont[0].muerto = True
+            historietas_encont[0].muerto = '1'
     else:
         while True:
             try:
@@ -357,7 +369,7 @@ def eliminar_historieta(historietas, seriales_index, titulos_index):
                 except:
                     print("Seleccione un número válido. \n")
             historietas_encont[int(
-                historieta)-1].muerto = True
+                historieta)-1].muerto = '1'
 
     # MAIN
 
@@ -503,9 +515,6 @@ def main():
             quick_sort(titulos_index)
 
         else:
-            historietas = compactador(historietas)
-            # Cargamos los cambios al CSV
-            guardar_historietas(historietas)
             print('¡Hasta luego!')
             break
 
