@@ -146,7 +146,9 @@ def registrar_historieta(historietas, seriales_index):
     while (not stock.isnumeric()) or (len(stock) > 2) or (len(stock) < 1) or (int(stock) <= 0):
         stock = input('Introduzca una cantidad válida: ')
 
-    nueva_historieta = Historieta(rrn, serial, titulo, precio, stock)
+    muerto =0
+
+    nueva_historieta = Historieta(rrn, serial, titulo, precio, stock, muerto)
     historietas.append(nueva_historieta)
     print('¡Se ha registrado la historieta con éxito!')
 
