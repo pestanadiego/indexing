@@ -20,7 +20,6 @@ def cargar_historietas(historietas):
 
     return historietas
 
-
 def guardar_historietas(historietas):
     with open('historietas.csv', 'w') as archivo_csv:
         csv_writer = csv.writer(archivo_csv)
@@ -139,11 +138,10 @@ def registrar_historieta(historietas, seriales_index):
     while (not stock.isnumeric()) or (len(stock) > 2) or (len(stock) < 1) or (int(stock) <= 0):
         stock = input('Introduzca una cantidad válida: ')
 
-    muerto = 0
-
-    nueva_historieta = Historieta(rrn, serial, titulo, precio, stock, muerto)
+    nueva_historieta = Historieta(rrn, serial, titulo, precio, stock, "0")
     historietas.append(nueva_historieta)
     print('¡Se ha registrado la historieta con éxito!')
+    return historietas
 
 def consulta_serial(historietas, seriales, serial):
     index = busqueda_binaria(seriales, serial)
@@ -318,7 +316,7 @@ def eliminar_historieta(historietas, seriales_index, titulos_index):
     if len(historietas_encont) == 1:
         while True:
             try:
-                escoge = input('''Desea elminar el stock de esta historieta?
+                escoge = input('''¿Desea eliminar esta historieta?
                 1. Si
                 2. No
                 >> ''')
@@ -455,10 +453,7 @@ def main():
             seleccion = input('Por favor, ingrese una opción válida: ')
 
         if seleccion == '1':
-            print(historietas)
-            print(seriales_index)
-            print(titulos_index)
-            registrar_historieta(historietas, seriales_index)
+            historietas = registrar_historieta(historietas, seriales_index)
             # Cargamos los cambios al CSV
             guardar_historietas(historietas)
             # Vaciamos y volvemos a crear y ordenar el index de seriales
@@ -470,9 +465,6 @@ def main():
             titulos_index = []
             titulos_index = reorder_titulos_index(historietas, titulos_index)
             quick_sort(titulos_index)
-            print(historietas)
-            print(seriales_index)
-            print(titulos_index)
 
         elif seleccion == '2':
             consulta(historietas, seriales_index, titulos_index)
